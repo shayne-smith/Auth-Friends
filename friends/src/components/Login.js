@@ -29,7 +29,7 @@ class Login extends Component {
                 console.log(res);
                 this.setState({ isLoading: false });
                 localStorage.setItem('token', res.data.payload);
-                this.props.history.push('/protected');
+                this.props.history.push('/friends');
             })
             .catch(err => {
                 this.setState({ isLoading: false });
@@ -40,16 +40,19 @@ class Login extends Component {
     render() {
         return (
             <div>
+                <h1>Login</h1>
                 <form onSubmit={this.login}>
                     <input
                         type='text'
                         name='username'
+                        placeholder='username'
                         value={this.state.credentials.username}
                         onChange={this.handleChange}
                     />
                     <input
                         type='password'
                         name='password'
+                        placeholder='password'
                         value={this.state.credentials.password}
                         onChange={this.handleChange}
                     />

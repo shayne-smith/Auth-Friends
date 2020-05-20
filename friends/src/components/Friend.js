@@ -12,6 +12,8 @@ function Friend({ details }) {
                 <p>Age: {details.age}</p>
                 <p>Email: {details.email}</p>
             </div>
+            <button >Edit</button>
+            <button>Delete</button>
         </div>
     )
 }

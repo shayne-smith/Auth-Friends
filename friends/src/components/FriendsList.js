@@ -1,4 +1,5 @@
-import React, { useState, Component } from 'react';
+import React, { Component } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import Form from './FriendsForm';
 import Friend from './Friend';
@@ -17,60 +18,74 @@ class FriendsList extends Component {
         formValues: initalFormValues
     }
 
-    postFriend = () => {
-        axiosWithAuth
-            .post('/api/friends')
-            .then(res => console.log(res))
+    componentDidMount() {
+        this.getData();
+    }
+
+    postFriend = (newFriend) => {
+        axiosWithAuth()
+            .post('/api/friends', newFriend)
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    friends: [
+                        ...this.state.friends,
+                        newFriend
+                    ]
+                })
+            })
             .catch(err => console.log(err))
     };
+
+    getData = () => {
+
+        axiosWithAuth()
+            .get('/api/friends')
+            .then(res => {
+                this.setState({
+                    friends: res.data
+                })
+            })
+            .catch(err => console.log(err))
+    }
 
     onInputChange = e => {
         const name = e.target.name;
         const value = e.target.value;
 
-        // setFormValues({
-        //     ...formValues,
-        //     [name]: value
-        // })
+        console.log(name, value)
 
-        this.state.formValues = {
-            ...this.state.formValues,
-            [name]: value
-        }
+        this.setState({
+            formValues: {
+                ...this.state.formValues,
+                [name]: value
+            }
+        });
     };
 
     onSubmit = e => {
         e.preventDefault();
 
-        // setFormValues({
-        //     ...formValues,
-        //     id: (formValues.id + 1)
-        // })
-
-        this.state.formValues = {
-            ...this.state.formValues,
-            id: (this.state.formValues.id + 1)
-        }
-
         const newFriend = {
-            id: this.state.formValues.id,
+            id: uuid(),
             name: this.state.formValues.name,
             age: this.state.formValues.age,
             email: this.state.formValues.email
         }
 
         this.postFriend(newFriend);
-        this.state.formValues = initalFormValues;
+        this.setState({
+            formValues: initalFormValues
+        })
     };
         render() {
             return (
                 <div className='container'>
                     <Form
                         values={this.state.formValues}
-                        onInputChange={this.onInputChange}
+                        onChange={this.onInputChange}
                         onSubmit={this.onSubmit}
                     />
-                    <h1>Hello</h1>
                     <div className='friendsContainer'>
                         {
                             this.state.friends.map(friend => {
